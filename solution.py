@@ -10,6 +10,7 @@ Date: 2025-26
 Course: CS771 - Introduction to Machine Learning, IIT Kanpur
 """
 
+import os
 import numpy as np
 import time
 from typing import Tuple, List, Dict
@@ -70,6 +71,10 @@ class APUFDecoder:
         # Derive weight components
         alpha = (d + c) / 2
         beta = (d - c) / 2
+
+        # Support scalar or vector inputs uniformly
+        alpha = np.atleast_1d(alpha)
+        beta = np.atleast_1d(beta)
 
         # Build weight vector
         w = np.zeros((len(alpha) + 1,))
@@ -322,17 +327,17 @@ class APUFDecoder:
 
     def print_results(self, results: Dict) -> None:
         """Print formatted results."""
-        print("\n📊 Decoding Results Summary")
+        print("\nDecoding Results Summary")
         print("=" * 70)
         print(f"Number of Models: {results['n_models']}")
         print(f"Trials per Model: {results['n_trials']}")
         print()
-        print("⏱️  Timing Analysis:")
+        print("Timing Analysis:")
         print(f"  Average Decoding Time: {results['avg_decoding_time']*1e6:.2f} µs/model")
         print(f"  Std Dev: {results['std_decoding_time']*1e6:.2f} µs")
         print(f"  Total Time: {results['total_decoding_time']:.4f} s")
         print()
-        print("📈 Reconstruction Error:")
+        print("Reconstruction Error:")
         print(f"  Mean Error: {results['avg_reconstruction_error']:.6f}")
         print(f"  Std Dev: {results['std_reconstruction_error']:.6f}")
         print(f"  Max Error: {results['max_reconstruction_error']:.6f}")
@@ -348,23 +353,27 @@ def main():
     1. Load XOR-APUF weight vectors
     2. Decode all models
     3. Reconstruct and evaluate
-    4. Generate results report
+    4. Generate results report and save outputs
     """
 
     # Initialize decoder
     decoder = APUFDecoder()
 
-    # Load weight vectors (update path as needed)
-    print("📂 Loading APUF weight vectors...")
-    try:
-        W = np.loadtxt("data/secret/secret_mod.txt")
-        print(f"✓ Loaded {W.shape[0]} models, dimension {W.shape[1]}")
-    except FileNotFoundError:
-        print("⚠️  secret_mod.txt not found. Using synthetic data for demo...")
-        # Generate synthetic data for demonstration
+    # Determine data file path
+    secret_path = os.path.join("data", "secret", "secret_mod.txt")
+    public_path = os.path.join("data", "public_mod.txt")
+    data_path = secret_path if os.path.exists(secret_path) else public_path
+
+    print("Loading APUF weight vectors...")
+    if os.path.exists(data_path):
+        W = np.loadtxt(data_path)
+        print(f"Loaded {W.shape[0]} models from {data_path}, dimension {W.shape[1]}")
+    else:
+        print(f"No data file found at {secret_path} or {public_path}. Using synthetic data for demo...")
         n_models = 100
         n_dims = 16
         W = np.random.randn(n_models, n_dims)
+        print(f"Generated synthetic dataset: {W.shape}")
 
     # Process all models
     results = decoder.process_models(W, n_trials=5, verbose=True)
@@ -372,18 +381,33 @@ def main():
     # Print results
     decoder.print_results(results)
 
-    # Save results
-    import os
+    # Save results and per-model diagnostics
     os.makedirs("results", exist_ok=True)
 
-    with open("results/decoding_results.txt", 'w') as f:
+    summary_path = os.path.join("results", "decoding_results.txt")
+    errors_path = os.path.join("results", "reconstruction_errors.txt")
+    timing_path = os.path.join("results", "timing_analysis.txt")
+
+    with open(summary_path, 'w') as f:
         f.write("APUF Model Decoding Results\n")
         f.write("=" * 50 + "\n")
+        f.write(f"Data file: {data_path}\n")
         f.write(f"Number of Models: {results['n_models']}\n")
+        f.write(f"Trials per Model: {results['n_trials']}\n")
         f.write(f"Average Decoding Time: {results['avg_decoding_time']*1e6:.2f} µs\n")
+        f.write(f"Std Decoding Time: {results['std_decoding_time']*1e6:.2f} µs\n")
+        f.write(f"Total Decoding Time: {results['total_decoding_time']:.4f} s\n")
         f.write(f"Average Reconstruction Error: {results['avg_reconstruction_error']:.6f}\n")
+        f.write(f"Std Reconstruction Error: {results['std_reconstruction_error']:.6f}\n")
+        f.write(f"Min Reconstruction Error: {results['min_reconstruction_error']:.6f}\n")
+        f.write(f"Max Reconstruction Error: {results['max_reconstruction_error']:.6f}\n")
 
-    print(f"\n✅ Results saved to results/")
+    np.savetxt(errors_path, results['per_model_errors'], fmt="%.8f")
+    np.savetxt(timing_path, results['per_model_times'], fmt="%.8f")
+
+    print(f"\nResults saved to: {summary_path}")
+    print(f"Per-model errors saved to: {errors_path}")
+    print(f"Per-model timings saved to: {timing_path}")
 
 
 if __name__ == "__main__":
