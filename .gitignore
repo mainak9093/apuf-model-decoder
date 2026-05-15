@@ -70,8 +70,7 @@ venv.bak/
 *~
 .DS_Store
 
-# Data files (keep structure, ignore secret data)
-data/secret/
+# Data files (keep structure)
 results/
 
 # Model files
