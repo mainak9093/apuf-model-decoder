@@ -7,7 +7,7 @@
 
 ---
 
-## 📋 Problem Statement
+## Problem Statement
 
 Implement an **Arbiter PUF (Physically Unclonable Function) Model Decoder** using machine learning techniques. The goal is to:
 
@@ -30,7 +30,7 @@ Implement an **Arbiter PUF (Physically Unclonable Function) Model Decoder** usin
 
 ---
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 apuf-model-decoder/
@@ -54,7 +54,7 @@ apuf-model-decoder/
 
 ---
 
-## 🎯 Approach
+## Approach
 
 ### 1. **APUF Model Representation**
 
@@ -171,7 +171,7 @@ jupyter notebook
 
 ---
 
-## 📊 Results Summary
+## Results Summary
 
 ### Performance Metrics
 
@@ -204,7 +204,7 @@ Reconstruction Error Statistics:
 
 ---
 
-## 🔧 Technical Details
+## Technical Details
 
 ### APUF Model Generation
 
@@ -251,7 +251,7 @@ The decoding function reverse-engineers APUF parameters from the weight vector s
 
 ---
 
-## 🧪 Validation & Testing
+## Validation & Testing
 
 The solution is validated using:
 - **Provided weight vectors** from course
@@ -262,7 +262,7 @@ The solution is validated using:
 
 ---
 
-## 💡 Key Insights
+## Key Insights
 
 1. **Kronecker Product Structure**: XOR-APUF inherits the Kronecker structure, enabling factorization-based decoding
 2. **Parameter Constraints**: ReLU constraints on parameters provide implicit regularization
@@ -271,7 +271,7 @@ The solution is validated using:
 
 ---
 
-## 📁 Data Format
+## Data Format
 
 ### Input: Models File (secret_mod.txt)
 
@@ -289,13 +289,13 @@ Format: Binary matrix of shape (n_models, vector_dimension)
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 This is an assignment submission. For improvements or questions, feel free to open an issue.
 
 ---
 
-## 📚 References
+## References
 
 ### PUF Literature
 - "Arbiter PUFs: Delay Characteristics, Modeling and Attacks" - Suh & Devadas
@@ -309,20 +309,20 @@ This is an assignment submission. For improvements or questions, feel free to op
 
 ---
 
-## 📄 License
+## License
 
 Academic use only. Part of CS771 course at IIT Kanpur.
 
 ---
 
-## 👤 Author
+## Author
 
 **Mainak** (mainak9093)  
 IIT Kanpur, CS771 - Introduction to Machine Learning
 
 ---
 
-## 📞 Support
+## Support
 
 For issues or questions:
 - Check `docs/approach.md` for detailed explanations
